@@ -1,34 +1,48 @@
 import React, { useState, useEffect } from 'react';
-import { Calendar, Clock, Car, Phone, FileText, Home } from 'lucide-react';
+import { Calendar, Clock, Car, FileText, Home, RefreshCw } from 'lucide-react';
+import { buscarAgendamentos, atualizarStatusAgendamento } from '../firebase/agendamentosService';
 import './DashboardDono.css';
 
 const DashboardDono = () => {
   const [agendamentos, setAgendamentos] = useState([]);
+  const [carregando, setCarregando] = useState(true);
+  const [filtroStatus, setFiltroStatus] = useState('todos');
 
-  const agendamentosMock = [
-    {
-      id: '1',
-      modeloCarro: 'Ford Ka',
-      anoCarro: '2018',
-      descricaoProblema: 'Barulho estranho no motor',
-      dataSelecionada: '2024-12-27',
-      horarioSelecionado: '09:00',
-      criadoEm: '2024-12-25T10:30:00'
-    },
-    {
-      id: '2',
-      modeloCarro: 'Volkswagen Gol',
-      anoCarro: '2020',
-      descricaoProblema: 'Troca de óleo',
-      dataSelecionada: '2024-12-27',
-      horarioSelecionado: '14:00',
-      criadoEm: '2024-12-24T15:20:00'
+  const carregarAgendamentos = async () => {
+    setCarregando(true);
+    try {
+      const resultado = await buscarAgendamentos();
+      if (resultado.success) {
+        setAgendamentos(resultado.data);
+      }
+    } catch (error) {
+      console.error('Erro ao carregar:', error);
+    } finally {
+      setCarregando(false);
     }
-  ];
+  };
 
   useEffect(() => {
-    setAgendamentos(agendamentosMock);
+    carregarAgendamentos();
   }, []);
+
+  const mudarStatus = async (id, novoStatus) => {
+    const confirmacao = window.confirm(`Deseja mesmo marcar como ${novoStatus}?`);
+    if (!confirmacao) return;
+
+    const resultado = await atualizarStatusAgendamento(id, novoStatus);
+    if (resultado.success) {
+      carregarAgendamentos();
+      alert('✅ Status atualizado!');
+    } else {
+      alert('❌ Erro ao atualizar status');
+    }
+  };
+
+  const agendamentosFiltrados = agendamentos.filter(ag => {
+    if (filtroStatus === 'todos') return true;
+    return ag.status === filtroStatus;
+  });
 
   const formatarData = (dataISO) => {
     const data = new Date(dataISO + 'T00:00:00');
@@ -39,29 +53,71 @@ const DashboardDono = () => {
     });
   };
 
+  const getStatusCor = (status) => {
+    const cores = {
+      pendente: '#f6ad55',
+      confirmado: '#48bb78',
+      cancelado: '#fc8181'
+    };
+    return cores[status] || '#ccc';
+  };
+
   return (
     <div className="dashboard-oficina">
       <div className="dashboard-header-oficina">
         <h1>📊 Painel de Agendamentos</h1>
-        <a href="/" className="btn-voltar-home">
-          <Home size={18} /> Voltar para agendamento
-        </a>
+        <div style={{display: 'flex', gap: '10px'}}>
+          <button onClick={carregarAgendamentos} className="btn-atualizar" disabled={carregando}>
+            <RefreshCw size={18} /> {carregando ? 'Carregando...' : 'Atualizar'}
+          </button>
+          <a href="/" className="btn-voltar-home">
+            <Home size={18} /> Voltar
+          </a>
+        </div>
       </div>
 
-      <div className="info-box">
-        <p>💡 <strong>Atenção:</strong> Os agendamentos são enviados diretamente para o WhatsApp. Este painel mostra exemplos de como os dados aparecerão.</p>
+      <div className="filtros-status">
+        <button 
+          className={filtroStatus === 'todos' ? 'ativo' : ''} 
+          onClick={() => setFiltroStatus('todos')}
+        >
+          Todos ({agendamentos.length})
+        </button>
+        <button 
+          className={filtroStatus === 'pendente' ? 'ativo' : ''} 
+          onClick={() => setFiltroStatus('pendente')}
+        >
+          Pendentes ({agendamentos.filter(a => a.status === 'pendente').length})
+        </button>
+        <button 
+          className={filtroStatus === 'confirmado' ? 'ativo' : ''} 
+          onClick={() => setFiltroStatus('confirmado')}
+        >
+          Confirmados ({agendamentos.filter(a => a.status === 'confirmado').length})
+        </button>
+        <button 
+          className={filtroStatus === 'cancelado' ? 'ativo' : ''} 
+          onClick={() => setFiltroStatus('cancelado')}
+        >
+          Cancelados ({agendamentos.filter(a => a.status === 'cancelado').length})
+        </button>
       </div>
 
       <div className="agendamentos-lista-oficina">
-        {agendamentos.length === 0 ? (
+        {carregando ? (
+          <div className="sem-agendamentos-oficina">
+            <RefreshCw size={48} className="spinner" />
+            <p>Carregando agendamentos...</p>
+          </div>
+        ) : agendamentosFiltrados.length === 0 ? (
           <div className="sem-agendamentos-oficina">
             <Calendar size={48} />
-            <p>Nenhum agendamento no momento</p>
+            <p>Nenhum agendamento encontrado</p>
           </div>
         ) : (
-          agendamentos.map(ag => (
+          agendamentosFiltrados.map(ag => (
             <div key={ag.id} className="agendamento-card-oficina">
-              <div className="card-header-oficina">
+              <div className="card-header-oficina" style={{background: getStatusCor(ag.status)}}>
                 <div className="data-info">
                   <Calendar size={20} />
                   <div>
@@ -71,6 +127,7 @@ const DashboardDono = () => {
                     </div>
                   </div>
                 </div>
+                <span className="status-badge-header">{ag.status?.toUpperCase()}</span>
               </div>
 
               <div className="card-body-oficina">
@@ -89,6 +146,17 @@ const DashboardDono = () => {
                     <p>{ag.descricaoProblema}</p>
                   </div>
                 </div>
+
+                {ag.status === 'pendente' && (
+                  <div className="acoes-card">
+                    <button onClick={() => mudarStatus(ag.id, 'confirmado')} className="btn-confirmar-mini">
+                      ✅ Confirmar
+                    </button>
+                    <button onClick={() => mudarStatus(ag.id, 'cancelado')} className="btn-cancelar-mini">
+                      ❌ Cancelar
+                    </button>
+                  </div>
+                )}
               </div>
             </div>
           ))
