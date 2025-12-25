@@ -1,101 +1,159 @@
-import React, { useState, useEffect } from 'react';
-import { Calendar, Clock, Car, Phone, FileText, Home } from 'lucide-react';
-import './DashboardDono.css';
+@import url('https://fonts.googleapis.com/css2?family=Anton&family=Nunito:wght@400;600&display=swap');
 
-const DashboardDono = () => {
-  const [agendamentos, setAgendamentos] = useState([]);
+.dashboard-oficina {
+  font-family: 'Nunito', sans-serif;
+  min-height: 100vh;
+  background: #fdfdfd;
+  padding: 30px;
+}
 
-  const agendamentosMock = [
-    {
-      id: '1',
-      modeloCarro: 'Ford Ka',
-      anoCarro: '2018',
-      descricaoProblema: 'Barulho estranho no motor',
-      dataSelecionada: '2024-12-27',
-      horarioSelecionado: '09:00',
-      criadoEm: '2024-12-25T10:30:00'
-    },
-    {
-      id: '2',
-      modeloCarro: 'Volkswagen Gol',
-      anoCarro: '2020',
-      descricaoProblema: 'Troca de óleo',
-      dataSelecionada: '2024-12-27',
-      horarioSelecionado: '14:00',
-      criadoEm: '2024-12-24T15:20:00'
-    }
-  ];
+.dashboard-header-oficina {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+  flex-wrap: wrap;
+  gap: 15px;
+}
 
-  useEffect(() => {
-    setAgendamentos(agendamentosMock);
-  }, []);
+.dashboard-header-oficina h1 {
+  font-size: 2rem;
+  color: #f78f3f;
+  font-family: 'Anton', sans-serif;
+  margin: 0;
+}
 
-  const formatarData = (dataISO) => {
-    const data = new Date(dataISO + 'T00:00:00');
-    return data.toLocaleDateString('pt-BR', { 
-      weekday: 'long', 
-      day: '2-digit', 
-      month: 'long' 
-    });
-  };
+.btn-voltar-home {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #f78f3f;
+  color: white;
+  padding: 12px 20px;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 600;
+  transition: background 0.3s;
+}
 
-  return (
-    <div className="dashboard-oficina">
-      <div className="dashboard-header-oficina">
-        <h1>📊 Painel de Agendamentos</h1>
-        <a href="/" className="btn-voltar-home">
-          <Home size={18} /> Voltar para agendamento
-        </a>
-      </div>
+.btn-voltar-home:hover {
+  background: #e36400;
+}
 
-      <div className="info-box">
-        <p>💡 <strong>Atenção:</strong> Os agendamentos são enviados diretamente para o WhatsApp. Este painel mostra exemplos de como os dados aparecerão.</p>
-      </div>
+.info-box {
+  background: #fff5ed;
+  border: 1.5px solid #f78f3f;
+  border-radius: 8px;
+  padding: 15px 20px;
+  margin-bottom: 30px;
+  color: #333;
+}
 
-      <div className="agendamentos-lista-oficina">
-        {agendamentos.length === 0 ? (
-          <div className="sem-agendamentos-oficina">
-            <Calendar size={48} />
-            <p>Nenhum agendamento no momento</p>
-          </div>
-        ) : (
-          agendamentos.map(ag => (
-            <div key={ag.id} className="agendamento-card-oficina">
-              <div className="card-header-oficina">
-                <div className="data-info">
-                  <Calendar size={20} />
-                  <div>
-                    <strong>{formatarData(ag.dataSelecionada)}</strong>
-                    <div className="horario-badge">
-                      <Clock size={16} /> {ag.horarioSelecionado}
-                    </div>
-                  </div>
-                </div>
-              </div>
+.agendamentos-lista-oficina {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
 
-              <div className="card-body-oficina">
-                <div className="info-item-oficina">
-                  <Car size={18} />
-                  <div>
-                    <label>Veículo</label>
-                    <p>{ag.modeloCarro} - {ag.anoCarro}</p>
-                  </div>
-                </div>
+.sem-agendamentos-oficina {
+  background: white;
+  padding: 60px;
+  border-radius: 12px;
+  text-align: center;
+  color: #999;
+  border: 1px solid rgba(247, 143, 63, 0.3);
+}
 
-                <div className="info-item-oficina">
-                  <FileText size={18} />
-                  <div>
-                    <label>Problema</label>
-                    <p>{ag.descricaoProblema}</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          ))
-        )}
-      </div>
-    </div>
-  );
-};
+.sem-agendamentos-oficina p {
+  margin-top: 15px;
+  font-size: 1.1rem;
+}
 
-export default DashboardDono;
+.agendamento-card-oficina {
+  background: white;
+  border-radius: 12px;
+  border: 1px solid rgba(247, 143, 63, 0.3);
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s;
+}
+
+.agendamento-card-oficina:hover {
+  box-shadow: 0 8px 20px rgba(247, 143, 63, 0.3);
+  transform: translateY(-2px);
+}
+
+.card-header-oficina {
+  background: linear-gradient(135deg, #f78f3f 0%, #e36400 100%);
+  padding: 20px;
+  color: white;
+}
+
+.data-info {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.data-info strong {
+  display: block;
+  font-size: 1.1rem;
+  margin-bottom: 5px;
+  text-transform: capitalize;
+}
+
+.horario-badge {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.95rem;
+  opacity: 0.95;
+}
+
+.card-body-oficina {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.info-item-oficina {
+  display: flex;
+  gap: 12px;
+}
+
+.info-item-oficina svg {
+  color: #f78f3f;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.info-item-oficina label {
+  display: block;
+  color: #999;
+  font-size: 0.85rem;
+  margin-bottom: 4px;
+  font-weight: 600;
+}
+
+.info-item-oficina p {
+  color: #333;
+  font-size: 1rem;
+  margin: 0;
+  line-height: 1.5;
+}
+
+@media (max-width: 768px) {
+  .dashboard-oficina {
+    padding: 15px;
+  }
+
+  .dashboard-header-oficina {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .dashboard-header-oficina h1 {
+    font-size: 1.5rem;
+  }
+}
