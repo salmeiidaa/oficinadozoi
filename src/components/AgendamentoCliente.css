@@ -236,6 +236,21 @@
   text-align: center;
 }
 
+.link-admin {
+  color: #f78f3f;
+  text-decoration: none;
+  font-size: 0.9rem;
+  font-weight: 600;
+  display: inline-block;
+  margin-top: 8px;
+  transition: color 0.3s;
+}
+
+.link-admin:hover {
+  color: #e36400;
+  text-decoration: underline;
+}
+
 @media (max-width: 480px) {
   .oficina-box {
     padding: 20px 16px;
