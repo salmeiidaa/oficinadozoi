@@ -11,7 +11,7 @@
 }
 
 .oficina-box {
-  max-width: 500px;
+  max-width: 600px;
   width: 100%;
   background: #fff;
   padding: 30px 25px;
@@ -46,12 +46,11 @@
   align-items: center;
   gap: 8px;
   font-size: 1.1rem;
-  margin: 16px 0 6px;
+  margin: 20px 0 10px;
   color: #f78f3f;
   font-family: 'Anton', sans-serif;
 }
 
-.oficina-form select,
 .oficina-form input,
 .oficina-form textarea {
   width: 100%;
@@ -66,7 +65,6 @@
   box-sizing: border-box;
 }
 
-.oficina-form select:focus,
 .oficina-form input:focus,
 .oficina-form textarea:focus {
   outline: none;
@@ -78,6 +76,136 @@
   resize: vertical;
 }
 
+/* CALENDÁRIO */
+.calendario {
+  border: 1.5px solid #f78f3f;
+  border-radius: 8px;
+  padding: 15px;
+  background: #fff;
+}
+
+.calendario-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.btn-mes {
+  background: #f78f3f;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  width: 35px;
+  height: 35px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.btn-mes:hover {
+  background: #e36400;
+}
+
+.mes-ano {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #f78f3f;
+  text-transform: capitalize;
+  font-family: 'Anton', sans-serif;
+}
+
+.dias-semana {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 5px;
+  margin-bottom: 10px;
+}
+
+.dia-semana {
+  text-align: center;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #666;
+  padding: 5px;
+}
+
+.dias-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 5px;
+}
+
+.dia-btn {
+  aspect-ratio: 1;
+  border: 1.5px solid #f78f3f;
+  background: white;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.3s;
+  font-family: 'Nunito', sans-serif;
+  color: #333;
+}
+
+.dia-btn:hover:not(:disabled) {
+  background: #fff5ed;
+  transform: scale(1.05);
+}
+
+.dia-btn.selecionado {
+  background: #f78f3f;
+  color: white;
+  font-weight: 600;
+}
+
+.dia-btn.desabilitado {
+  background: #f5f5f5;
+  color: #ccc;
+  cursor: not-allowed;
+  border-color: #e0e0e0;
+}
+
+.dia-btn.vazio {
+  border: none;
+  cursor: default;
+}
+
+/* HORÁRIOS */
+.horarios-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.horario-btn {
+  padding: 12px;
+  border: 1.5px solid #f78f3f;
+  background: white;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.3s;
+  font-family: 'Nunito', sans-serif;
+  color: #333;
+  font-weight: 500;
+}
+
+.horario-btn:hover {
+  background: #fff5ed;
+  transform: translateY(-2px);
+}
+
+.horario-btn.selecionado {
+  background: #f78f3f;
+  color: white;
+  font-weight: 600;
+}
+
+/* BOTÃO SUBMIT */
 .submit-btn {
   margin-top: 22px;
   width: 100%;
@@ -106,14 +234,9 @@
   font-size: 0.95rem;
   color: #666;
   text-align: center;
-  opacity: 0.9;
 }
 
 @media (max-width: 480px) {
-  .oficina-container {
-    padding: 12px;
-  }
-
   .oficina-box {
     padding: 20px 16px;
   }
@@ -122,12 +245,11 @@
     font-size: 1.5rem;
   }
 
-  .oficina-form label {
-    font-size: 1rem;
+  .dia-btn {
+    font-size: 0.85rem;
   }
 
-  .submit-btn {
-    font-size: 1.1rem;
-    padding: 12px;
+  .horarios-grid {
+    grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
   }
 }
