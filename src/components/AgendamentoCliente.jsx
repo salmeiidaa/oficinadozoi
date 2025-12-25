@@ -167,16 +167,12 @@ const AgendamentoCliente = () => {
           </button>
         </form>
 
-        <p className="footer-note">
+      <p className="footer-note">
           * Preencha todos os campos para liberar o envio.
-          <br />
-          <a href="/admin" className="link-admin">
-            🔐 Área do administrador
-          </a>
         </p>
       </div>
     </div>
   );
 };
 
-export default AgendamentoCliente;      
+export default AgendamentoCliente; AgendamentoCliente;      
