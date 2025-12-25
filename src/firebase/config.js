@@ -1,23 +1,27 @@
 import { initializeApp } from 'firebase/app';
 import { getFirestore } from 'firebase/firestore';
 
-// Configuração do Firebase usando variáveis de ambiente
-// Para desenvolvimento local, crie um arquivo .env na raiz do projeto
-// Para produção (Vercel), configure as variáveis no painel da Vercel
+console.log('🔥 Iniciando configuração do Firebase...');
+console.log('📋 Variáveis de ambiente:');
+console.log('API_KEY:', import.meta.env.VITE_FIREBASE_API_KEY ? '✅ Configurada' : '❌ Faltando');
+console.log('AUTH_DOMAIN:', import.meta.env.VITE_FIREBASE_AUTH_DOMAIN ? '✅ Configurada' : '❌ Faltando');
+console.log('PROJECT_ID:', import.meta.env.VITE_FIREBASE_PROJECT_ID ? '✅ Configurada' : '❌ Faltando');
 
 const firebaseConfig = {
-  apiKey: import.meta.env.VITE_FIREBASE_API_KEY || "SUA_API_KEY_AQUI",
-  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN || "seu-projeto.firebaseapp.com",
-  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID || "seu-projeto-id",
-  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET || "seu-projeto.appspot.com",
-  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID || "123456789",
-  appId: import.meta.env.VITE_FIREBASE_APP_ID || "seu-app-id"
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+  appId: import.meta.env.VITE_FIREBASE_APP_ID
 };
 
-// Inicializar Firebase
+console.log('🔧 Firebase Config:', firebaseConfig);
+
 const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
 
-// Inicializar Firestore
-export const db = getFirestore(app);
+console.log('✅ Firebase inicializado com sucesso!');
 
+export { db };
 export default app;
