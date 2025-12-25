@@ -69,36 +69,48 @@ const AgendamentoCliente = () => {
            agendamento.descricaoProblema.trim();
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
+ const handleSubmit = (e) => {
+  e.preventDefault();
+  
+  console.log('🚀 Iniciando envio...');
 
-    const whatsapp = '5571994063730';
-    const dataFormatada = new Date(agendamento.dataSelecionada + 'T00:00:00').toLocaleDateString('pt-BR');
-    const mensagem = `Olá, quero agendar um horário na oficina.%0A%0A` +
-                    `Dia: ${dataFormatada}%0A` +
-                    `Horário: ${agendamento.horarioSelecionado}%0A` +
-                    `Modelo: ${agendamento.modeloCarro}%0A` +
-                    `Ano: ${agendamento.anoCarro}%0A` +
-                    `Problema: ${agendamento.descricaoProblema}`;
+  const whatsapp = '5571994063730';
+  const dataFormatada = new Date(agendamento.dataSelecionada + 'T00:00:00').toLocaleDateString('pt-BR');
+  const mensagem = `Olá, quero agendar um horário na oficina.%0A%0A` +
+                  `Dia: ${dataFormatada}%0A` +
+                  `Horário: ${agendamento.horarioSelecionado}%0A` +
+                  `Modelo: ${agendamento.modeloCarro}%0A` +
+                  `Ano: ${agendamento.anoCarro}%0A` +
+                  `Problema: ${agendamento.descricaoProblema}`;
 
-    window.open(`https://wa.me/${whatsapp}?text=${mensagem}`, '_blank');
+  window.open(`https://wa.me/${whatsapp}?text=${mensagem}`, '_blank');
 
-    criarAgendamento(agendamento).then(resultado => {
+  console.log('💾 Salvando no Firebase...');
+  
+  criarAgendamento(agendamento)
+    .then(resultado => {
+      console.log('Resposta:', resultado);
       if (resultado.success) {
-        console.log('✅ Salvo no Firebase!');
+        console.log('✅ Salvo! ID:', resultado.id);
+        alert('✅ Agendamento salvo com sucesso!');
+      } else {
+        console.error('❌ Erro:', resultado.error);
+        alert('❌ Erro: ' + resultado.error);
       }
-    }).catch(erro => {
-      console.error('Erro ao salvar:', erro);
+    })
+    .catch(erro => {
+      console.error('❌ Erro crítico:', erro);
+      alert('❌ Erro: ' + erro.message);
     });
 
-    setAgendamento({
-      dataSelecionada: '',
-      horarioSelecionado: '',
-      modeloCarro: '',
-      anoCarro: '',
-      descricaoProblema: ''
-    });
-  };
+  setAgendamento({
+    dataSelecionada: '',
+    horarioSelecionado: '',
+    modeloCarro: '',
+    anoCarro: '',
+    descricaoProblema: ''
+  });
+};
 
   const diasSemana = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
   const diasDoMes = getDiasDoMes();
