@@ -1,170 +1,108 @@
 import React, { useState } from 'react';
-import { Calendar, Clock, Car, User, Phone, FileText, CheckCircle } from 'lucide-react';
+import { Calendar, Clock } from 'lucide-react';
 import './AgendamentoCliente.css';
 
 const AgendamentoCliente = () => {
-  const [etapa, setEtapa] = useState(1);
   const [agendamento, setAgendamento] = useState({
-    nomeCliente: '', telefone: '', marca: '', modelo: '', ano: '', placa: '',
-    descricaoProblema: '', dataSelecionada: '', horarioSelecionado: ''
+    dataSelecionada: '',
+    horarioSelecionado: '',
+    modeloCarro: '',
+    anoCarro: '',
+    descricaoProblema: ''
   });
 
-  const horariosDisponiveis = ['08:00', '09:00', '10:00', '11:00', '13:00', '14:00', '15:00', '16:00', '17:00'];
+  const horariosDisponiveis = ['08:00', '09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00', '18:00', '19:00', '20:00'];
 
   const gerarDatasDisponiveis = () => {
     const datas = [];
     const hoje = new Date();
-    for (let i = 1; i <= 30; i++) {
+    for (let i = 0; i < 30; i++) {
       const data = new Date(hoje);
       data.setDate(hoje.getDate() + i);
-      if (data.getDay() !== 0) {
-        datas.push({
-          data: data.toISOString().split('T')[0],
-          diaSemana: data.toLocaleDateString('pt-BR', { weekday: 'long' }),
-          diaFormatado: data.toLocaleDateString('pt-BR')
-        });
-      }
+      datas.push({
+        valor: data.toISOString().split('T')[0],
+        label: data.toLocaleDateString('pt-BR', { weekday: 'short', day: '2-digit', month: '2-digit' })
+      });
     }
     return datas;
   };
 
   const datasDisponiveis = gerarDatasDisponiveis();
 
-  const handleInputChange = (e) => {
+  const handleChange = (e) => {
     setAgendamento(prev => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    alert('Agendamento realizado com sucesso!');
-    setAgendamento({
-      nomeCliente: '', telefone: '', marca: '', modelo: '', ano: '', placa: '',
-      descricaoProblema: '', dataSelecionada: '', horarioSelecionado: ''
-    });
-    setEtapa(1);
+  const formularioCompleto = () => {
+    return agendamento.dataSelecionada && 
+           agendamento.horarioSelecionado && 
+           agendamento.modeloCarro.trim() && 
+           agendamento.anoCarro.trim() && 
+           agendamento.descricaoProblema.trim();
   };
 
-  const podeAvancar = () => {
-    if (etapa === 1) return agendamento.nomeCliente && agendamento.telefone;
-    if (etapa === 2) return agendamento.marca && agendamento.modelo && agendamento.ano;
-    if (etapa === 3) return agendamento.descricaoProblema;
-    if (etapa === 4) return agendamento.dataSelecionada && agendamento.horarioSelecionado;
-    return false;
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const whatsapp = '5571994063730';
+    const mensagem = `Olá, quero agendar um horário na oficina.%0A%0A` +
+                    `Dia: ${agendamento.dataSelecionada}%0A` +
+                    `Horário: ${agendamento.horarioSelecionado}%0A` +
+                    `Modelo do carro: ${agendamento.modeloCarro}%0A` +
+                    `Ano do carro: ${agendamento.anoCarro}%0A` +
+                    `Descrição do problema: ${agendamento.descricaoProblema}`;
+    
+    window.open(`https://wa.me/${whatsapp}?text=${mensagem}`, '_blank');
   };
 
   return (
-    <div className="agendamento-container">
-      <div className="agendamento-header">
-        <Car size={40} className="logo-icon" />
-        <h1>Oficina Mecânica</h1>
-        <p>Agende seu atendimento de forma rápida e prática</p>
+    <div className="oficina-container">
+      <div className="oficina-box">
+        <header className="oficina-header">
+          <img src="https://i.postimg.cc/cHtTFJnY/Whats-App-Image-2025-07-25-at-10-57-00.jpg" alt="Felipe Zoi - Mecânica em Geral" />
+          <h1>Agende seu horário</h1>
+        </header>
+
+        <form onSubmit={handleSubmit} className="oficina-form">
+          <label htmlFor="dataSelecionada">
+            <Calendar size={18} /> Escolha o dia
+          </label>
+          <select id="dataSelecionada" name="dataSelecionada" value={agendamento.dataSelecionada} onChange={handleChange} required>
+            <option value="">Selecione um dia</option>
+            {datasDisponiveis.map(data => (
+              <option key={data.valor} value={data.valor}>{data.label}</option>
+            ))}
+          </select>
+
+          <label htmlFor="horarioSelecionado">
+            <Clock size={18} /> Escolha o horário
+          </label>
+          <select id="horarioSelecionado" name="horarioSelecionado" value={agendamento.horarioSelecionado} 
+                  onChange={handleChange} disabled={!agendamento.dataSelecionada} required>
+            <option value="">Selecione um horário</option>
+            {horariosDisponiveis.map(hora => (
+              <option key={hora} value={hora}>{hora}</option>
+            ))}
+          </select>
+
+          <label htmlFor="modeloCarro">Modelo do carro</label>
+          <input type="text" id="modeloCarro" name="modeloCarro" value={agendamento.modeloCarro} 
+                 onChange={handleChange} placeholder="Ex: Ford Ka" required />
+
+          <label htmlFor="anoCarro">Ano do carro</label>
+          <input type="number" id="anoCarro" name="anoCarro" value={agendamento.anoCarro} 
+                 onChange={handleChange} placeholder="Ex: 2018" min="1900" max="2100" required />
+
+          <label htmlFor="descricaoProblema">Descrição do problema</label>
+          <textarea id="descricaoProblema" name="descricaoProblema" value={agendamento.descricaoProblema} 
+                    onChange={handleChange} placeholder="Descreva o problema do carro" rows="4" required />
+
+          <button type="submit" className="submit-btn" disabled={!formularioCompleto()}>
+            Enviar pelo WhatsApp
+          </button>
+        </form>
+
+        <p className="footer-note">* Preencha todos os campos para liberar o envio.</p>
       </div>
-
-      <div className="progress-bar">
-        {[1,2,3,4].map(num => (
-          <div key={num} className={`progress-step ${etapa >= num ? 'active' : ''}`}>
-            <div className="step-number">{num}</div>
-            <span>{['Seus Dados','Veículo','Problema','Data/Hora'][num-1]}</span>
-          </div>
-        ))}
-      </div>
-
-      <form onSubmit={handleSubmit} className="agendamento-form">
-        {etapa === 1 && (
-          <div className="form-section">
-            <h2><User size={24} /> Seus Dados</h2>
-            <div className="form-group">
-              <label>Nome Completo *</label>
-              <input type="text" name="nomeCliente" value={agendamento.nomeCliente} onChange={handleInputChange} required />
-            </div>
-            <div className="form-group">
-              <label>Telefone/WhatsApp *</label>
-              <input type="tel" name="telefone" value={agendamento.telefone} onChange={handleInputChange} required />
-            </div>
-          </div>
-        )}
-
-        {etapa === 2 && (
-          <div className="form-section">
-            <h2><Car size={24} /> Dados do Veículo</h2>
-            <div className="form-row">
-              <div className="form-group">
-                <label>Marca *</label>
-                <input type="text" name="marca" value={agendamento.marca} onChange={handleInputChange} required />
-              </div>
-              <div className="form-group">
-                <label>Modelo *</label>
-                <input type="text" name="modelo" value={agendamento.modelo} onChange={handleInputChange} required />
-              </div>
-            </div>
-            <div className="form-row">
-              <div className="form-group">
-                <label>Ano *</label>
-                <input type="text" name="ano" value={agendamento.ano} onChange={handleInputChange} maxLength="4" required />
-              </div>
-              <div className="form-group">
-                <label>Placa (opcional)</label>
-                <input type="text" name="placa" value={agendamento.placa} onChange={handleInputChange} maxLength="8" />
-              </div>
-            </div>
-          </div>
-        )}
-
-        {etapa === 3 && (
-          <div className="form-section">
-            <h2><FileText size={24} /> Descreva o Problema</h2>
-            <div className="form-group">
-              <label>O que está acontecendo com seu veículo? *</label>
-              <textarea name="descricaoProblema" value={agendamento.descricaoProblema} onChange={handleInputChange} rows="6" required />
-              <small>Quanto mais detalhes, melhor poderemos te ajudar!</small>
-            </div>
-          </div>
-        )}
-
-        {etapa === 4 && (
-          <div className="form-section">
-            <h2><Calendar size={24} /> Escolha Data e Horário</h2>
-            <div className="form-group">
-              <label>Selecione o dia *</label>
-              <div className="data-grid">
-                {datasDisponiveis.slice(0, 10).map((item) => (
-                  <button key={item.data} type="button" 
-                    className={`data-card ${agendamento.dataSelecionada === item.data ? 'selected' : ''}`}
-                    onClick={() => setAgendamento(prev => ({ ...prev, dataSelecionada: item.data }))}>
-                    <div className="data-dia">{item.diaSemana}</div>
-                    <div className="data-numero">{item.diaFormatado}</div>
-                  </button>
-                ))}
-              </div>
-            </div>
-            {agendamento.dataSelecionada && (
-              <div className="form-group">
-                <label>Selecione o horário *</label>
-                <div className="horario-grid">
-                  {horariosDisponiveis.map((horario) => (
-                    <button key={horario} type="button"
-                      className={`horario-card ${agendamento.horarioSelecionado === horario ? 'selected' : ''}`}
-                      onClick={() => setAgendamento(prev => ({ ...prev, horarioSelecionado: horario }))}>
-                      <Clock size={18} /> {horario}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            )}
-          </div>
-        )}
-
-        <div className="form-actions">
-          {etapa > 1 && <button type="button" className="btn-secondary" onClick={() => setEtapa(etapa - 1)}>Voltar</button>}
-          {etapa < 4 ? (
-            <button type="button" className="btn-primary" onClick={() => setEtapa(etapa + 1)} disabled={!podeAvancar()}>Continuar</button>
-          ) : (
-            <button type="submit" className="btn-success" disabled={!podeAvancar()}>
-              <CheckCircle size={20} /> Confirmar Agendamento
-            </button>
-          )}
-        </div>
-      </form>
     </div>
   );
 };
