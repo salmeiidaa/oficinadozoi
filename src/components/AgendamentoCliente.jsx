@@ -163,7 +163,7 @@ const mensagem = `Olá, quero agendar um horário na oficina.%0A%0A` +
                     onChange={handleChange} placeholder="Descreva o problema do carro" rows="4" required />
 
           <button type="submit" className="submit-btn" disabled={!formularioCompleto()}>
-            Enviar pelo WhatsApp
+            Enviar agendamento pelo WhatsApp
           </button>
         </form>
 
