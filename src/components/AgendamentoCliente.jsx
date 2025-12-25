@@ -72,12 +72,14 @@ const AgendamentoCliente = () => {
     e.preventDefault();
     const whatsapp = '5571994063730';
     const dataFormatada = new Date(agendamento.dataSelecionada + 'T00:00:00').toLocaleDateString('pt-BR');
-    const mensagem = `Olá, quero agendar um horário na oficina.%0A%0A` +
-                    `📅 Dia: ${dataFormatada}%0A` +
-                    `🕐 Horário: ${agendamento.horarioSelecionado}%0A` +
-                    `🚗 Modelo: ${agendamento.modeloCarro}%0A` +
-                    `📆 Ano: ${agendamento.anoCarro}%0A` +
-                    `📝 Problema: ${agendamento.descricaoProblema}`;
+  const mensagem = `🔧 *AGENDAMENTO - OFICINA*%0A` +
+                `━━━━━━━━━━━━━━━━━━━━%0A%0A` +
+                `📅 *Data:* ${dataFormatada}%0A` +
+                `🕐 *Horário:* ${agendamento.horarioSelecionado}%0A%0A` +
+                `🚗 *Veículo:* ${agendamento.modeloCarro}%0A` +
+                `📆 *Ano:* ${agendamento.anoCarro}%0A%0A` +
+                `🔧 *Problema:*%0A${agendamento.descricaoProblema}%0A%0A` +
+                `━━━━━━━━━━━━━━━━━━━━%0A` ;
     
     window.open(`https://wa.me/${whatsapp}?text=${mensagem}`, '_blank');
   };
