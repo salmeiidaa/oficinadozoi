@@ -194,7 +194,7 @@ const AgendamentoCliente = () => {
                     onChange={handleChange} placeholder="Descreva o problema do carro" rows="4" required />
 
           <button type="submit" className="submit-btn" disabled={!formularioCompleto() || enviando}>
-            {enviando ? '⏳ Salvando...' : 'Enviar pelo WhatsApp'}
+            {enviando ? '⏳ Salvando...' : 'Enviar agendamento pelo WhatsApp'}
           </button>
         </form>
 
