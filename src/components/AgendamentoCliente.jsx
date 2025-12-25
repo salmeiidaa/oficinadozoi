@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import { Calendar, Clock, ChevronLeft, ChevronRight } from 'lucide-react';
+import { criarAgendamento } from '../firebase/agendamentosService';
 import './AgendamentoCliente.css';
 
 const AgendamentoCliente = () => {
   const [mesAtual, setMesAtual] = useState(new Date());
+  const [enviando, setEnviando] = useState(false);
   const [agendamento, setAgendamento] = useState({
     dataSelecionada: '',
     horarioSelecionado: '',
@@ -68,18 +70,47 @@ const AgendamentoCliente = () => {
            agendamento.descricaoProblema.trim();
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    const whatsapp = '5571994063730';
-    const dataFormatada = new Date(agendamento.dataSelecionada + 'T00:00:00').toLocaleDateString('pt-BR');
-const mensagem = `Olá, quero agendar um horário na oficina.%0A%0A` +
+    setEnviando(true);
+
+    try {
+      // 1. SALVAR NO FIREBASE
+      const resultado = await criarAgendamento(agendamento);
+      
+      if (resultado.success) {
+        // 2. PREPARAR MENSAGEM DO WHATSAPP
+        const whatsapp = '5571994063730';
+        const dataFormatada = new Date(agendamento.dataSelecionada + 'T00:00:00').toLocaleDateString('pt-BR');
+        const mensagem = `Olá, quero agendar um horário na oficina.%0A%0A` +
                 `Dia: ${dataFormatada}%0A` +
                 `Horário: ${agendamento.horarioSelecionado}%0A` +
                 `Modelo: ${agendamento.modeloCarro}%0A` +
                 `Ano: ${agendamento.anoCarro}%0A` +
                 `Problema: ${agendamento.descricaoProblema}`;
-    
-    window.open(`https://wa.me/${whatsapp}?text=${mensagem}`, '_blank');
+        
+        // 3. ABRIR WHATSAPP
+        window.open(`https://wa.me/${whatsapp}?text=${mensagem}`, '_blank');
+        
+        // 4. RESETAR FORMULÁRIO
+        setAgendamento({
+          dataSelecionada: '',
+          horarioSelecionado: '',
+          modeloCarro: '',
+          anoCarro: '',
+          descricaoProblema: ''
+        });
+        
+        alert('✅ Agendamento salvo com sucesso! Você será redirecionado para o WhatsApp.');
+      } else {
+        alert('❌ Erro ao salvar agendamento. Tente novamente.');
+      }
+    } catch (error) {
+      console.error('Erro:', error);
+      alert('❌ Erro ao processar agendamento. Verifique sua conexão.');
+    } finally {
+      setEnviando(false);
+    }
   };
 
   const diasSemana = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
@@ -162,12 +193,12 @@ const mensagem = `Olá, quero agendar um horário na oficina.%0A%0A` +
           <textarea name="descricaoProblema" value={agendamento.descricaoProblema} 
                     onChange={handleChange} placeholder="Descreva o problema do carro" rows="4" required />
 
-          <button type="submit" className="submit-btn" disabled={!formularioCompleto()}>
-            Enviar agendamento pelo WhatsApp
+          <button type="submit" className="submit-btn" disabled={!formularioCompleto() || enviando}>
+            {enviando ? '⏳ Salvando...' : 'Enviar pelo WhatsApp'}
           </button>
         </form>
 
-      <p className="footer-note">
+        <p className="footer-note">
           * Preencha todos os campos para liberar o envio.
         </p>
       </div>
@@ -175,4 +206,4 @@ const mensagem = `Olá, quero agendar um horário na oficina.%0A%0A` +
   );
 };
 
-export default AgendamentoCliente; AgendamentoCliente;      
+export default AgendamentoCliente;
