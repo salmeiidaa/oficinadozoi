@@ -26,12 +26,10 @@ const AgendamentoCliente = () => {
     const hoje = new Date();
     hoje.setHours(0, 0, 0, 0);
 
-    // Dias do mês anterior (vazios)
     for (let i = 0; i < diasAnteriores; i++) {
       dias.push(null);
     }
 
-    // Dias do mês atual
     for (let dia = 1; dia <= totalDias; dia++) {
       const data = new Date(ano, mes, dia);
       const dataStr = data.toISOString().split('T')[0];
@@ -97,7 +95,6 @@ const AgendamentoCliente = () => {
 
         <form onSubmit={handleSubmit} className="oficina-form">
           
-          {/* CALENDÁRIO */}
           <label><Calendar size={18} /> Escolha o dia</label>
           <div className="calendario">
             <div className="calendario-header">
@@ -135,7 +132,6 @@ const AgendamentoCliente = () => {
             </div>
           </div>
 
-          {/* HORÁRIOS */}
           {agendamento.dataSelecionada && (
             <>
               <label><Clock size={18} /> Escolha o horário</label>
@@ -154,7 +150,6 @@ const AgendamentoCliente = () => {
             </>
           )}
 
-          {/* DADOS DO CARRO */}
           <label>Modelo do carro</label>
           <input type="text" name="modeloCarro" value={agendamento.modeloCarro} 
                  onChange={handleChange} placeholder="Ex: Ford Ka" required />
@@ -172,10 +167,16 @@ const AgendamentoCliente = () => {
           </button>
         </form>
 
-        <p className="footer-note">* Preencha todos os campos para liberar o envio.</p>
+        <p className="footer-note">
+          * Preencha todos os campos para liberar o envio.
+          <br />
+          <a href="/admin" className="link-admin">
+            🔐 Área do administrador
+          </a>
+        </p>
       </div>
     </div>
   );
 };
 
-export default AgendamentoCliente;
+export default AgendamentoCliente;      
