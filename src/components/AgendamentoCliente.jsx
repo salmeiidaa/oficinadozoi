@@ -70,38 +70,32 @@ const AgendamentoCliente = () => {
            agendamento.descricaoProblema.trim();
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setEnviando(true);
+const handleSubmit = (e) => {
+  e.preventDefault();
 
-    try {
-      // 1. SALVAR NO FIREBASE
-      const resultado = await criarAgendamento(agendamento);
-      
-      if (resultado.success) {
-        // 2. PREPARAR MENSAGEM DO WHATSAPP
-        const whatsapp = '5571994063730';
-        const dataFormatada = new Date(agendamento.dataSelecionada + 'T00:00:00').toLocaleDateString('pt-BR');
-        const mensagem = `Olá, quero agendar um horário na oficina.%0A%0A` +
-                `Dia: ${dataFormatada}%0A` +
-                `Horário: ${agendamento.horarioSelecionado}%0A` +
-                `Modelo: ${agendamento.modeloCarro}%0A` +
-                `Ano: ${agendamento.anoCarro}%0A` +
-                `Problema: ${agendamento.descricaoProblema}`;
-        
-         // 2. ABRIR WHATSAPP IMEDIATAMENTE (SEM ESPERAR)
+  // PREPARAR MENSAGEM DO WHATSAPP
+  const whatsapp = '5571994063730';
+  const dataFormatada = new Date(agendamento.dataSelecionada + 'T00:00:00').toLocaleDateString('pt-BR');
+  const mensagem = `Olá, quero agendar um horário na oficina.%0A%0A` +
+                  `Dia: ${dataFormatada}%0A` +
+                  `Horário: ${agendamento.horarioSelecionado}%0A` +
+                  `Modelo: ${agendamento.modeloCarro}%0A` +
+                  `Ano: ${agendamento.anoCarro}%0A` +
+                  `Problema: ${agendamento.descricaoProblema}`;
+
+  // ABRIR WHATSAPP IMEDIATAMENTE
   window.open(`https://wa.me/${whatsapp}?text=${mensagem}`, '_blank');
 
-  // 3. SALVAR NO FIREBASE EM BACKGROUND (NÃO BLOQUEIA)
+  // SALVAR NO FIREBASE EM BACKGROUND
   criarAgendamento(agendamento).then(resultado => {
     if (resultado.success) {
-      console.log('✅ Agendamento salvo no Firebase!');
-    } else {
-      console.error('❌ Erro ao salvar:', resultado.error);
+      console.log('✅ Salvo no Firebase!');
     }
+  }).catch(erro => {
+    console.error('Erro ao salvar:', erro);
   });
 
-  // 4. RESETAR FORMULÁRIO IMEDIATAMENTE
+  // RESETAR FORMULÁRIO
   setAgendamento({
     dataSelecionada: '',
     horarioSelecionado: '',
@@ -109,6 +103,7 @@ const AgendamentoCliente = () => {
     anoCarro: '',
     descricaoProblema: ''
   });
+};
 
   // 5. MOSTRAR MENSAGEM DE SUCESSO
   alert('✅ Agendamento enviado! Verifique o WhatsApp.');
