@@ -89,29 +89,30 @@ const AgendamentoCliente = () => {
                 `Ano: ${agendamento.anoCarro}%0A` +
                 `Problema: ${agendamento.descricaoProblema}`;
         
-        // 3. ABRIR WHATSAPP
-        window.open(`https://wa.me/${whatsapp}?text=${mensagem}`, '_blank');
-        
-        // 4. RESETAR FORMULÁRIO
-        setAgendamento({
-          dataSelecionada: '',
-          horarioSelecionado: '',
-          modeloCarro: '',
-          anoCarro: '',
-          descricaoProblema: ''
-        });
-        
-        alert('✅ Agendamento salvo com sucesso! Você será redirecionado para o WhatsApp.');
-      } else {
-        alert('❌ Erro ao salvar agendamento. Tente novamente.');
-      }
-    } catch (error) {
-      console.error('Erro:', error);
-      alert('❌ Erro ao processar agendamento. Verifique sua conexão.');
-    } finally {
-      setEnviando(false);
+         // 2. ABRIR WHATSAPP IMEDIATAMENTE (SEM ESPERAR)
+  window.open(`https://wa.me/${whatsapp}?text=${mensagem}`, '_blank');
+
+  // 3. SALVAR NO FIREBASE EM BACKGROUND (NÃO BLOQUEIA)
+  criarAgendamento(agendamento).then(resultado => {
+    if (resultado.success) {
+      console.log('✅ Agendamento salvo no Firebase!');
+    } else {
+      console.error('❌ Erro ao salvar:', resultado.error);
     }
-  };
+  });
+
+  // 4. RESETAR FORMULÁRIO IMEDIATAMENTE
+  setAgendamento({
+    dataSelecionada: '',
+    horarioSelecionado: '',
+    modeloCarro: '',
+    anoCarro: '',
+    descricaoProblema: ''
+  });
+
+  // 5. MOSTRAR MENSAGEM DE SUCESSO
+  alert('✅ Agendamento enviado! Verifique o WhatsApp.');
+};;
 
   const diasSemana = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
   const diasDoMes = getDiasDoMes();
