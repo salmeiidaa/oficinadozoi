@@ -5,7 +5,6 @@ import './AgendamentoCliente.css';
 
 const AgendamentoCliente = () => {
   const [mesAtual, setMesAtual] = useState(new Date());
-  const [enviando, setEnviando] = useState(false);
   const [agendamento, setAgendamento] = useState({
     dataSelecionada: '',
     horarioSelecionado: '',
@@ -189,9 +188,9 @@ const handleSubmit = (e) => {
           <textarea name="descricaoProblema" value={agendamento.descricaoProblema} 
                     onChange={handleChange} placeholder="Descreva o problema do carro" rows="4" required />
 
-          <button type="submit" className="submit-btn" disabled={!formularioCompleto() || enviando}>
-            {enviando ? '⏳ Salvando...' : 'Enviar agendamento pelo WhatsApp'}
-          </button>
+<button type="submit" className="submit-btn" disabled={!formularioCompleto()}>
+  Enviar agendamento pelo WhatsApp
+</button>
         </form>
 
         <p className="footer-note">
