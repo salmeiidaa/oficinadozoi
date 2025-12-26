@@ -14,7 +14,7 @@ const DashboardDono = () => {
     
     try {
       const resultado = await buscarAgendamentos();
-      console.log('📊 Resposta completa:', resultado);
+      console.log('Resposta completa:', resultado);
       
       if (resultado.success) {
         console.log('✅ Agendamentos encontrados:', resultado.data.length);
@@ -166,10 +166,10 @@ const DashboardDono = () => {
                 {ag.status === 'pendente' && (
                   <div className="acoes-card">
                     <button onClick={() => mudarStatus(ag.id, 'confirmado')} className="btn-confirmar-mini">
-                      ✅ Confirmar
+                      Confirmar
                     </button>
                     <button onClick={() => mudarStatus(ag.id, 'cancelado')} className="btn-cancelar-mini">
-                      ❌ Cancelar
+                      Cancelar
                     </button>
                   </div>
                 )}
