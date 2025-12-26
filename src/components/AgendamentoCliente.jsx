@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Calendar, Clock, ChevronLeft, ChevronRight } from 'lucide-react';
 import { criarAgendamento } from '../firebase/agendamentosService';
+import Toast from './Toast';
 import './AgendamentoCliente.css';
 
 const AgendamentoCliente = () => {
@@ -12,6 +13,7 @@ const AgendamentoCliente = () => {
     anoCarro: '',
     descricaoProblema: ''
   });
+  const [toast, setToast] = useState(null);
 
   const horariosDisponiveis = ['08:00', '09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00', '18:00', '19:00', '20:00'];
 
@@ -69,48 +71,40 @@ const AgendamentoCliente = () => {
            agendamento.descricaoProblema.trim();
   };
 
- const handleSubmit = (e) => {
-  e.preventDefault();
-  
-  console.log('🚀 Iniciando envio...');
+  const handleSubmit = (e) => {
+    e.preventDefault();
 
-  const whatsapp = '5571994063730';
-  const dataFormatada = new Date(agendamento.dataSelecionada + 'T00:00:00').toLocaleDateString('pt-BR');
-  const mensagem = `Olá, quero agendar um horário na oficina.%0A%0A` +
-                  `Dia: ${dataFormatada}%0A` +
-                  `Horário: ${agendamento.horarioSelecionado}%0A` +
-                  `Modelo: ${agendamento.modeloCarro}%0A` +
-                  `Ano: ${agendamento.anoCarro}%0A` +
-                  `Problema: ${agendamento.descricaoProblema}`;
+    const whatsapp = '5571994063730';
+    const dataFormatada = new Date(agendamento.dataSelecionada + 'T00:00:00').toLocaleDateString('pt-BR');
+    const mensagem = `Olá, quero agendar um horário na oficina.%0A%0A` +
+                    `Dia: ${dataFormatada}%0A` +
+                    `Horário: ${agendamento.horarioSelecionado}%0A` +
+                    `Modelo: ${agendamento.modeloCarro}%0A` +
+                    `Ano: ${agendamento.anoCarro}%0A` +
+                    `Problema: ${agendamento.descricaoProblema}`;
 
-  window.open(`https://wa.me/${whatsapp}?text=${mensagem}`, '_blank');
+    window.open(`https://wa.me/${whatsapp}?text=${mensagem}`, '_blank');
+    
+    criarAgendamento(agendamento)
+      .then(resultado => {
+        if (resultado.success) {
+          setToast({ message: 'Agendamento salvo com sucesso!', type: 'success' });
+        } else {
+          setToast({ message: 'Erro ao salvar: ' + resultado.error, type: 'error' });
+        }
+      })
+      .catch(erro => {
+        setToast({ message: 'Erro crítico: ' + erro.message, type: 'error' });
+      });
 
-  console.log('💾 Salvando no Firebase...');
-  
-  criarAgendamento(agendamento)
-    .then(resultado => {
-      console.log('Resposta:', resultado);
-      if (resultado.success) {
-        console.log('✅ Salvo! ID:', resultado.id);
-        alert('✅ Agendamento salvo com sucesso!');
-      } else {
-        console.error('❌ Erro:', resultado.error);
-        alert('❌ Erro: ' + resultado.error);
-      }
-    })
-    .catch(erro => {
-      console.error('❌ Erro crítico:', erro);
-      alert('❌ Erro: ' + erro.message);
+    setAgendamento({
+      dataSelecionada: '',
+      horarioSelecionado: '',
+      modeloCarro: '',
+      anoCarro: '',
+      descricaoProblema: ''
     });
-
-  setAgendamento({
-    dataSelecionada: '',
-    horarioSelecionado: '',
-    modeloCarro: '',
-    anoCarro: '',
-    descricaoProblema: ''
-  });
-};
+  };
 
   const diasSemana = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
   const diasDoMes = getDiasDoMes();
@@ -193,13 +187,21 @@ const AgendamentoCliente = () => {
                     onChange={handleChange} placeholder="Descreva o problema do carro" rows="4" required />
 
           <button type="submit" className="submit-btn" disabled={!formularioCompleto()}>
-            Enviar agendamento pelo WhatsApp
+            Enviar pelo WhatsApp
           </button>
         </form>
 
         <p className="footer-note">
           * Preencha todos os campos para liberar o envio.
         </p>
+
+        {toast && (
+          <Toast 
+            message={toast.message} 
+            type={toast.type} 
+            onClose={() => setToast(null)} 
+          />
+        )}
       </div>
     </div>
   );
