@@ -1,70 +1,86 @@
-@import url('https://fonts.googleapis.com/css2?family=Anton&family=Nunito:wght@400;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
-.dashboard-oficina {
-  font-family: 'Nunito', sans-serif;
-  min-height: 100vh;
-  background: #fdfdfd;
-  padding: 30px;
+* {
+  box-sizing: border-box;
 }
 
+.dashboard-oficina {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #f5f7fa 0%, #e8ecf1 100%);
+  padding: 40px 20px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* HEADER */
 .dashboard-header-oficina {
+  max-width: 1200px;
+  margin: 0 auto 35px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 30px;
   flex-wrap: wrap;
   gap: 15px;
 }
 
 .dashboard-header-oficina h1 {
-  font-size: 2rem;
-  color: #f78f3f;
-  font-family: 'Anton', sans-serif;
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #1a1a1a;
   margin: 0;
+  letter-spacing: -0.5px;
 }
 
+.dashboard-header-oficina > div {
+  display: flex;
+  gap: 10px;
+}
+
+/* BOTÕES HEADER */
+.btn-atualizar,
 .btn-voltar-home {
   display: flex;
   align-items: center;
   gap: 8px;
-  background: #f78f3f;
-  color: white;
   padding: 12px 20px;
-  border-radius: 8px;
-  text-decoration: none;
+  border-radius: 10px;
+  font-size: 0.95rem;
   font-weight: 600;
-  transition: background 0.3s;
-  border: none;
   cursor: pointer;
-  font-family: 'Nunito', sans-serif;
-}
-
-.btn-voltar-home:hover {
-  background: #e36400;
+  transition: all 0.2s ease;
+  text-decoration: none;
+  border: none;
+  font-family: 'Inter', sans-serif;
 }
 
 .btn-atualizar {
-  display: flex;
-  align-items: center;
-  gap: 8px;
   background: white;
-  color: #f78f3f;
-  padding: 12px 20px;
-  border-radius: 8px;
-  border: 1.5px solid #f78f3f;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.3s;
-  font-family: 'Nunito', sans-serif;
+  color: #4a5568;
+  border: 1.5px solid #e2e8f0;
 }
 
 .btn-atualizar:hover:not(:disabled) {
-  background: #fff5ed;
+  background: #fafbfc;
+  border-color: #cbd5e0;
+  transform: translateY(-1px);
 }
 
 .btn-atualizar:disabled {
   opacity: 0.6;
   cursor: not-allowed;
+}
+
+.btn-voltar-home {
+  background: #f78f3f;
+  color: white;
+  border: 1.5px solid transparent;
+}
+
+.btn-voltar-home:hover {
+  background: #e67e2e;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(247, 143, 63, 0.3);
 }
 
 .spinner {
@@ -78,35 +94,43 @@
 
 /* FILTROS */
 .filtros-status {
+  max-width: 1200px;
+  margin: 0 auto 30px;
   display: flex;
   gap: 10px;
-  margin-bottom: 30px;
   flex-wrap: wrap;
 }
 
 .filtros-status button {
-  padding: 10px 20px;
-  border: 1.5px solid #f78f3f;
+  padding: 10px 18px;
+  border: 1.5px solid #e2e8f0;
   background: white;
-  border-radius: 8px;
+  border-radius: 10px;
   cursor: pointer;
   font-weight: 600;
-  transition: all 0.3s;
-  font-family: 'Nunito', sans-serif;
-  color: #333;
+  font-size: 0.9rem;
+  transition: all 0.2s ease;
+  font-family: 'Inter', sans-serif;
+  color: #4a5568;
 }
 
 .filtros-status button:hover {
-  background: #fff5ed;
+  background: #fafbfc;
+  border-color: #cbd5e0;
+  transform: translateY(-1px);
 }
 
 .filtros-status button.ativo {
   background: #f78f3f;
   color: white;
+  border-color: #f78f3f;
+  box-shadow: 0 4px 12px rgba(247, 143, 63, 0.25);
 }
 
 /* LISTA DE AGENDAMENTOS */
 .agendamentos-lista-oficina {
+  max-width: 1200px;
+  margin: 0 auto;
   display: flex;
   flex-direction: column;
   gap: 20px;
@@ -114,38 +138,47 @@
 
 .sem-agendamentos-oficina {
   background: white;
-  padding: 60px;
-  border-radius: 12px;
+  padding: 80px 40px;
+  border-radius: 16px;
   text-align: center;
-  color: #999;
-  border: 1px solid rgba(247, 143, 63, 0.3);
+  color: #a0aec0;
+  border: 1.5px solid #e2e8f0;
+}
+
+.sem-agendamentos-oficina svg {
+  color: #cbd5e0;
+  margin-bottom: 15px;
 }
 
 .sem-agendamentos-oficina p {
-  margin-top: 15px;
-  font-size: 1.1rem;
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 500;
+  color: #718096;
 }
 
+/* CARDS DE AGENDAMENTO */
 .agendamento-card-oficina {
   background: white;
-  border-radius: 12px;
-  border: 1px solid rgba(247, 143, 63, 0.3);
+  border-radius: 16px;
+  border: 1.5px solid #e2e8f0;
   overflow: hidden;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-  transition: all 0.3s;
+  transition: all 0.2s ease;
 }
 
 .agendamento-card-oficina:hover {
-  box-shadow: 0 8px 20px rgba(247, 143, 63, 0.3);
+  border-color: #cbd5e0;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
   transform: translateY(-2px);
 }
 
 .card-header-oficina {
-  padding: 20px;
-  color: white;
+  padding: 20px 24px;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 15px;
+  flex-wrap: wrap;
 }
 
 .data-info {
@@ -154,81 +187,105 @@
   gap: 15px;
 }
 
+.data-info svg {
+  color: white;
+  flex-shrink: 0;
+}
+
+.data-info > div {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
 .data-info strong {
-  display: block;
-  font-size: 1.1rem;
-  margin-bottom: 5px;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: white;
   text-transform: capitalize;
+  line-height: 1.2;
 }
 
 .horario-badge {
   display: flex;
   align-items: center;
   gap: 6px;
-  font-size: 0.95rem;
-  opacity: 0.95;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.95);
 }
 
 .status-badge-header {
-  background: rgba(255, 255, 255, 0.3);
-  padding: 6px 12px;
-  border-radius: 20px;
-  font-size: 0.85rem;
+  background: rgba(255, 255, 255, 0.25);
+  padding: 6px 14px;
+  border-radius: 8px;
+  font-size: 0.8rem;
   font-weight: 700;
+  letter-spacing: 0.5px;
 }
 
 .card-body-oficina {
-  padding: 20px;
+  padding: 24px;
   display: flex;
   flex-direction: column;
-  gap: 15px;
+  gap: 18px;
+  background: #fafbfc;
 }
 
 .info-item-oficina {
   display: flex;
   gap: 12px;
+  align-items: flex-start;
 }
 
 .info-item-oficina svg {
   color: #f78f3f;
   flex-shrink: 0;
-  margin-top: 2px;
+  margin-top: 3px;
+}
+
+.info-item-oficina > div {
+  flex: 1;
 }
 
 .info-item-oficina label {
   display: block;
-  color: #999;
-  font-size: 0.85rem;
-  margin-bottom: 4px;
+  color: #718096;
+  font-size: 0.8rem;
+  margin-bottom: 5px;
   font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 .info-item-oficina p {
-  color: #333;
-  font-size: 1rem;
+  color: #2d3748;
+  font-size: 0.95rem;
   margin: 0;
   line-height: 1.5;
+  font-weight: 500;
 }
 
 /* AÇÕES DO CARD */
 .acoes-card {
   display: flex;
   gap: 10px;
-  margin-top: 10px;
-  padding-top: 15px;
-  border-top: 1px solid #eee;
+  margin-top: 6px;
+  padding-top: 18px;
+  border-top: 1.5px solid #e2e8f0;
 }
 
 .btn-confirmar-mini,
 .btn-cancelar-mini {
   flex: 1;
-  padding: 10px;
+  padding: 11px 16px;
   border: none;
-  border-radius: 6px;
+  border-radius: 10px;
   font-weight: 600;
+  font-size: 0.9rem;
   cursor: pointer;
-  transition: all 0.3s;
-  font-family: 'Nunito', sans-serif;
+  transition: all 0.2s ease;
+  font-family: 'Inter', sans-serif;
 }
 
 .btn-confirmar-mini {
@@ -239,6 +296,7 @@
 .btn-confirmar-mini:hover {
   background: #38a169;
   transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(72, 187, 120, 0.3);
 }
 
 .btn-cancelar-mini {
@@ -249,12 +307,13 @@
 .btn-cancelar-mini:hover {
   background: #f56565;
   transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(252, 129, 129, 0.3);
 }
 
 /* RESPONSIVE */
 @media (max-width: 768px) {
   .dashboard-oficina {
-    padding: 15px;
+    padding: 20px 16px;
   }
 
   .dashboard-header-oficina {
@@ -266,11 +325,35 @@
     font-size: 1.5rem;
   }
 
+  .dashboard-header-oficina > div {
+    width: 100%;
+  }
+
+  .btn-atualizar,
+  .btn-voltar-home {
+    flex: 1;
+    justify-content: center;
+  }
+
   .filtros-status {
     flex-direction: column;
   }
 
   .filtros-status button {
     width: 100%;
+    text-align: center;
+  }
+
+  .card-header-oficina {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .status-badge-header {
+    align-self: flex-start;
+  }
+
+  .acoes-card {
+    flex-direction: column;
   }
 }
