@@ -10,19 +10,29 @@ const DashboardDono = () => {
 
   const carregarAgendamentos = async () => {
     setCarregando(true);
+    console.log('🔍 Buscando agendamentos no Firebase...');
+    
     try {
       const resultado = await buscarAgendamentos();
+      console.log('📊 Resposta completa:', resultado);
+      
       if (resultado.success) {
+        console.log('✅ Agendamentos encontrados:', resultado.data.length);
+        console.log('📋 Dados:', resultado.data);
         setAgendamentos(resultado.data);
+      } else {
+        console.error('❌ Erro ao buscar:', resultado.error);
       }
     } catch (error) {
-      console.error('Erro ao carregar:', error);
+      console.error('❌ Erro crítico ao carregar:', error);
     } finally {
       setCarregando(false);
+      console.log('✅ Carregamento finalizado');
     }
   };
 
   useEffect(() => {
+    console.log('🚀 Dashboard montado, iniciando carregamento...');
     carregarAgendamentos();
   }, []);
 
@@ -30,11 +40,15 @@ const DashboardDono = () => {
     const confirmacao = window.confirm(`Deseja mesmo marcar como ${novoStatus}?`);
     if (!confirmacao) return;
 
+    console.log('🔄 Atualizando status:', id, novoStatus);
     const resultado = await atualizarStatusAgendamento(id, novoStatus);
+    
     if (resultado.success) {
+      console.log('✅ Status atualizado com sucesso!');
       carregarAgendamentos();
       alert('✅ Status atualizado!');
     } else {
+      console.error('❌ Erro ao atualizar:', resultado.error);
       alert('❌ Erro ao atualizar status');
     }
   };
@@ -61,6 +75,8 @@ const DashboardDono = () => {
     };
     return cores[status] || '#ccc';
   };
+
+  console.log('🎨 Renderizando dashboard com', agendamentos.length, 'agendamentos');
 
   return (
     <div className="dashboard-oficina">
