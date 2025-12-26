@@ -16,22 +16,28 @@ const COLLECTION_NAME = 'agendamentos';
 // Criar novo agendamento
 export const criarAgendamento = async (dadosAgendamento) => {
   try {
+    console.log('💾 Salvando agendamento:', dadosAgendamento);
+    
     const agendamentoComTimestamp = {
-      ...dadosAgendamento,
+      modeloCarro: dadosAgendamento.modeloCarro,
+      anoCarro: dadosAgendamento.anoCarro,
+      descricaoProblema: dadosAgendamento.descricaoProblema,
+      dataSelecionada: dadosAgendamento.dataSelecionada,
+      horarioSelecionado: dadosAgendamento.horarioSelecionado,
       status: 'pendente',
       criadoEm: Timestamp.now(),
       atualizadoEm: Timestamp.now()
     };
 
+    console.log('📋 Dados formatados:', agendamentoComTimestamp);
+
     const docRef = await addDoc(collection(db, COLLECTION_NAME), agendamentoComTimestamp);
     
-    console.log('Agendamento criado com ID:', docRef.id);
-    
-    await enviarNotificacao(agendamentoComTimestamp);
+    console.log('✅ Agendamento criado com ID:', docRef.id);
     
     return { success: true, id: docRef.id };
   } catch (error) {
-    console.error('Erro ao criar agendamento:', error);
+    console.error('❌ Erro ao criar agendamento:', error);
     return { success: false, error: error.message };
   }
 };
@@ -39,6 +45,8 @@ export const criarAgendamento = async (dadosAgendamento) => {
 // Buscar todos os agendamentos
 export const buscarAgendamentos = async () => {
   try {
+    console.log('🔍 Buscando agendamentos da coleção:', COLLECTION_NAME);
+    
     const q = query(
       collection(db, COLLECTION_NAME),
       orderBy('dataSelecionada', 'desc'),
@@ -49,18 +57,21 @@ export const buscarAgendamentos = async () => {
     const agendamentos = [];
     
     querySnapshot.forEach((doc) => {
+      const data = doc.data();
       agendamentos.push({
         id: doc.id,
-        ...doc.data(),
-        criadoEm: doc.data().criadoEm?.toDate().toISOString(),
-        atualizadoEm: doc.data().atualizadoEm?.toDate().toISOString()
+        ...data,
+        criadoEm: data.criadoEm?.toDate().toISOString(),
+        atualizadoEm: data.atualizadoEm?.toDate().toISOString()
       });
     });
     
+    console.log('📊 Total de agendamentos encontrados:', agendamentos.length);
+    
     return { success: true, data: agendamentos };
   } catch (error) {
-    console.error('Erro ao buscar agendamentos:', error);
-    return { success: false, error: error.message };
+    console.error('❌ Erro ao buscar agendamentos:', error);
+    return { success: false, error: error.message, data: [] };
   }
 };
 
@@ -123,23 +134,13 @@ export const atualizarStatusAgendamento = async (id, novoStatus) => {
       atualizadoEm: Timestamp.now()
     });
     
-    console.log('Status atualizado para:', novoStatus);
+    console.log('✅ Status atualizado para:', novoStatus);
     
     return { success: true };
   } catch (error) {
     console.error('Erro ao atualizar status:', error);
     return { success: false, error: error.message };
   }
-};
-
-// Função auxiliar para enviar notificações
-const enviarNotificacao = async (agendamento) => {
-  console.log('📧 Notificação enviada para:', agendamento.telefone);
-  console.log('Agendamento:', {
-    cliente: agendamento.nomeCliente,
-    data: agendamento.dataSelecionada,
-    horario: agendamento.horarioSelecionado
-  });
 };
 
 export default {
